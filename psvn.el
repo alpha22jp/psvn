@@ -1767,14 +1767,16 @@ The results are used to build the `svn-status-info' variable."
           (skip-chars-forward " ")
           ;; (message "after marks: '%s'" (buffer-substring (point) (line-end-position)))
           (let (line limit)
-            (setq line (buffer-substring-no-properties (point) (svn-point-at-eol)))
+            (setq limit (svn-point-at-eol))
+            (setq line (buffer-substring-no-properties (point) limit))
             (when (> (length (split-string line)) 4)
               (save-excursion
-                ;; author column begins at point +14, file path column begins at point +27
-                (forward-char 14)
-                (setq limit (+ (point) 13))
-                (while (re-search-forward "\\(\\w\\) \\(\\w\\)" limit t)
-                  (replace-match "\\1.\\2")))))
+                (when
+                    (re-search-forward "\\([-?]\\|[0-9]+\\) +\\([-?]\\|[0-9]+\\)" limit t)
+                  ;; length of author column is at least 13 chars
+                  (setq limit (+ (point) 13))
+                  (while (re-search-forward "\\(\\w\\) \\(\\w\\)" limit t)
+                    (replace-match "\\1.\\2"))))))
           (cond
            ((looking-at "\\([-?]\\|[0-9]+\\) +\\([-?]\\|[0-9]+\\) +\\([^ ]+\\) *\\(.+\\)$")
             (setq local-rev (svn-parse-rev-num (match-string 1))
