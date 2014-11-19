@@ -1773,8 +1773,8 @@ The results are used to build the `svn-status-info' variable."
               (save-excursion
                 (when
                     (re-search-forward "\\([-?]\\|[0-9]+\\) +\\([-?]\\|[0-9]+\\)" limit t)
-                  ;; length of author column is at least 13 chars
-                  (setq limit (+ (point) 13))
+                  ;; length of author column is at least 12 chars
+                  (setq limit (+ (point) 12))
                   (while (re-search-forward "\\(\\w\\) \\(\\w\\)" limit t)
                     (replace-match "\\1.\\2"))))))
           (cond
